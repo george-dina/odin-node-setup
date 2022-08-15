@@ -77,3 +77,5 @@ sudo systemctl enable odind
 odind unsafe-reset-all
 sudo systemctl start odind
 echo "Odin Daemon has been built, configured, and started.  Please check the log file with 'journalctl -fu odind' to verify node operational."
+
+# set Storage=persistent in /etc/systemd/journald.conf if logs are not shown. Restart to see if live: sudo systemctl restart systemd-journald
