@@ -74,7 +74,7 @@ WantedBy=multi-user.target" > odind.service
 sudo cp odind.service /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo systemctl enable odind
-odind unsafe-reset-all
+odind tendermint unsafe-reset-all
 sudo systemctl start odind
 echo "Odin Daemon has been built, configured, and started.  Please check the log file with 'journalctl -fu odind' to verify node operational."
 
