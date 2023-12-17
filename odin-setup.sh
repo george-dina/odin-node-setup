@@ -8,9 +8,11 @@ sudo apt-get install make build-essential gcc git jq chrony -y
 # echo "PATH=~/go/bin:$PATH" >> ~/.profile
 # source ~/.profile
 wget https://golang.org/dl/go1.18.10.linux-amd64.tar.gz
+sudo tar -C /usr/local -xzvf go1.18.10.linux-amd64.tar.gz
+
 cat <<EOF >> ~/.profile
-export MONIKER_NAME="CHANGE_ME"
-EXPORT LIVE_RPC_NODE="http://35.241.221.154:26657"
+export MONIKER_NAME="Fenrir"
+export LIVE_RPC_NODE="http://35.241.221.154:26657"
 export CHAIN_ID="odin-mainnet-freya"
 export GOROOT=/usr/local/go
 export GOPATH=$HOME/go
@@ -31,8 +33,11 @@ cp ~/go/bin/odind ~/.odin/cosmovisor/genesis/bin/
 cd ..
 odind version
 
+# snapshot here if it went five
+
 ## Download cosmovisor
-wget https://github.com/cosmos/cosmos-sdk/releases/download/cosmovisor%2Fv1.1.0/cosmovisor-v1.1.0-linux-amd64.tar.gz ; tar xvfz  cosmovisor-v1.1.0-linux-amd64.tar.gz -C ~/go/bin/
+# wget https://github.com/cosmos/cosmos-sdk/releases/download/cosmovisor%2Fv1.1.0/cosmovisor-v1.1.0-linux-amd64.tar.gz ; tar xvfz  cosmovisor-v1.1.0-linux-amd64.tar.gz -C ~/go/bin/
+go install cosmossdk.io/tools/cosmovisor/cmd/cosmovisor@v1.4.0
 
 ## Set external_address in config.toml
 sed -i "s/external_address = \"\"/external_address = \"$(echo $(curl ifconfig.me):26656)\"/" .odin/config/config.toml
@@ -45,7 +50,7 @@ INTERVAL=2000
 LATEST_HEIGHT=$(curl -s $RPC_ADDR/block | jq -r .result.block.header.height);
 BLOCK_HEIGHT=$(($LATEST_HEIGHT-$INTERVAL))
 TRUST_HASH=$(curl -s "$RPC_ADDR/block?height=$BLOCK_HEIGHT" | jq -r .result.block_id.hash)
-SEED="4529fc24a87ff5ab105970f425ced7a6c79f0b8f@odin-seed-01.mercury-nodes.net:29536,c8ee9f66163f0c1220c586eab1a2a57f6381357f@odin.seed.rhinostake.com:16658"
+SEED="20e1000e88125698264454a884812746c2eb4807@seeds.lavenderfive.com:16856,ebc272824924ea1a27ea3183dd0b9ba713494f83@odin-mainnet-seed.autostake.com:26766"
 
 ## Displaying Height and hash
 echo "TRUST HEIGHT: $BLOCK_HEIGHT"
@@ -73,17 +78,18 @@ echo "[Unit]
 Description=Odin Cosmovisor Daemon
 After=network-online.target
 [Service]
-User=fenrir
-ExecStart=/home/fenrir/go/bin/cosmovisor run start
+User=$USER
+ExecStart=$HOME/go/bin/cosmovisor run start
 Restart=on-failure
 RestartSec=3
 LimitNOFILE=infinity
-Environment="DAEMON_HOME=/home/fenrir/.odin"
+Environment="DAEMON_HOME=$HOME/.odin"
 Environment="DAEMON_NAME=odind"
 Environment="DAEMON_ALLOW_DOWNLOAD_BINARIES=false"
 Environment="DAEMON_RESTART_AFTER_UPGRADE=true"
 [Install]
 WantedBy=multi-user.target" > odind.service
+
 sudo cp odind.service /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo systemctl enable odind
