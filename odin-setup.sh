@@ -11,7 +11,7 @@ source ~/.profile
 git clone https://github.com/ODIN-PROTOCOL/odin-core.git
 cd odin-core
 git fetch --tags
-git checkout v0.5.5
+git checkout v0.6.2
 make all
 mkdir -p ~/.odin/cosmovisor/genesis/bin
 cp ~/go/bin/odind ~/.odin/cosmovisor/genesis/bin/
