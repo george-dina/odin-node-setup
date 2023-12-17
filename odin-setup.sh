@@ -3,9 +3,22 @@
 ## Install essential packages
 sudo apt-get update && sudo apt upgrade -y 
 sudo apt-get install make build-essential gcc git jq chrony -y
-sudo snap install go --classic 
-echo "PATH=~/go/bin:$PATH" >> ~/.profile
+
+# sudo snap install go --classic 
+# echo "PATH=~/go/bin:$PATH" >> ~/.profile
+# source ~/.profile
+wget https://golang.org/dl/go1.18.10.linux-amd64.tar.gz
+cat <<EOF >> ~/.profile
+export MONIKER_NAME="CHANGE_ME"
+EXPORT LIVE_RPC_NODE="http://35.241.221.154:26657"
+export CHAIN_ID="odin-mainnet-freya"
+export GOROOT=/usr/local/go
+export GOPATH=$HOME/go
+export GO111MODULE=on
+export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin
+EOF
 source ~/.profile
+go version
 
 ## Clone odin repo and build from source
 git clone https://github.com/ODIN-PROTOCOL/odin-core.git
